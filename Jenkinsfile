@@ -3,17 +3,27 @@ agent any
 stages {
 stage('Checkout') {
 steps {
-git branch: 'main', url: 'https://github.com/gitsss13/p2.git'
+git branch: 'main', url: 'https://github.com/gitsss13/p3.git'
 }
 }
-stage('Generate Report') {
+stage('Parallel Checks') {
+parallel {
+stage('Frontend Check') {
 steps {
-bat 'python app.py'
+3
+bat 'python frontend_check.py'
 }
 }
-stage('Archive Report') {
+stage('Backend Check') {
 steps {
-archiveArtifacts artifacts: 'report.txt', fingerprint: true
+bat 'python backend_check.py'
+}
+}
+}
+}
+stage('Summary') {
+steps {
+echo 'Both frontend and backend checks are complete.'
 }
 }
 }
